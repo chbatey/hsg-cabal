@@ -7,7 +7,7 @@ import HW04
 ex1Suite :: TestTree
 ex1Suite = testGroup "Exercise 1"
     [
-        testCase "x"      $ x @?=  P [1, 0]
+        testCase "x"      $ x @?=  P [0, 1]
     ]
 
 equalitySuite :: TestTree
@@ -37,3 +37,16 @@ plusSuite = testGroup "Testing addition"
         testCase "Second shorter"   $ P [1, 1, 1] `plus` P [1] @?= P [2, 1, 1]
     ]
 
+timesSuite :: TestTree
+timesSuite = testGroup "Testing times"
+    [
+        testCase "Example"          $ P [1, 1, 1] * P [2, 2] @?= P [2, 4, 4, 2]
+    ]
+
+applySuite :: TestTree
+applySuite = testGroup "Testing application"
+    [
+        testCase "Simple" $ applyP x 1 @?= 1,
+        testCase "Two"    $ applyP (5 * x^2) 10 @?= 500,
+        testCase "Many"   $ applyP (x^2 + 2*x + 1) 2 @?= 9
+    ]

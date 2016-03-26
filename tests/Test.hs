@@ -16,6 +16,8 @@ week4Tests = testGroup "Week 4 Tests"
         ex1Suite,
         equalitySuite,
         showSuite,
-        plusSuite
+        plusSuite,
+        timesSuite,
+        applySuite
     ]
 

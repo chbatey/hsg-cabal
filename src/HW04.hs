@@ -5,14 +5,11 @@ import Data.List(intercalate)
 
 newtype Poly a = P [a]
 
-data Blah a = Blah [a] deriving (Show)
-data Wah a = Wah Int deriving (Show)
-
 
 -- Exercise 1 -----------------------------------------
 
 x :: Num a => Poly a
-x = P [1, 0]
+x = P [0, 1]
 
 -- Exercise 2 ----------------------------------------
 
@@ -44,9 +41,9 @@ string e c = show c ++ "x^" ++ show e
 
 plus :: Num a => Poly a -> Poly a -> Poly a
 (P a) `plus` (P b) = P $ add a b
-    where add [] b = b
-          add a [] = a
-          add (a:axs) (b:bxs) = (a+b) : add axs bxs
+    where add [] two = two
+          add one [] = one
+          add (one:axs) (two:bxs) = (one+two) : add axs bxs
 
 
 -- Exercise 5 -----------------------------------------
@@ -69,7 +66,7 @@ mult a (P b) = P $ map (*a) b
 instance Num a => Num (Poly a) where
     (+) = plus
     (*) = times
-    negate      = undefined
+    negate (P a) = P $ map (* (-1)) a
     fromInteger int = P [fromIntegral int]
     -- No meaningful definitions exist
     abs    = undefined
@@ -78,17 +75,20 @@ instance Num a => Num (Poly a) where
 -- Exercise 7 -----------------------------------------
 
 applyP :: Num a => Poly a -> a -> a
-applyP = undefined
+applyP (P p) a = foldr (\(c, e) b -> c * a ^ e + b) 0 withE
+    where withE = zip p [0..]
 
 -- Exercise 8 -----------------------------------------
 
 class Num a => Differentiable a where
     deriv  :: a -> a
     nderiv :: Int -> a -> a
-    nderiv = undefined
+    nderiv 1 a = deriv a
+    nderiv n a = nderiv (n-1) $ deriv a
 
 -- Exercise 9 -----------------------------------------
 
-instance Num a => Differentiable (Poly a) where
-    deriv = undefined
+instance (Num a) => Differentiable (Poly a) where
+    deriv (P p) = P $ tail $ map (\(c, e) ->  e * c) zipped
+        where zipped = zip p (iterate (+1) 0)
 
