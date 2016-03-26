@@ -1,15 +1,21 @@
-module Test where
+module Main where
 
 import Test.Tasty
-import Test.Tasty.HUnit
+
+import HW04Tests
 
 main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests  = testGroup "Tests" [unitTests]
+tests  = testGroup "Tests" [week4Tests]
 
-unitTests :: TestTree
-unitTests = testGroup "Unit Tests"
-  [ testCase "Something" $ 1 @?= 2
-  ]
+week4Tests :: TestTree
+week4Tests = testGroup "Week 4 Tests"
+    [
+        ex1Suite,
+        equalitySuite,
+        showSuite,
+        plusSuite
+    ]
+
