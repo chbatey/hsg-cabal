@@ -16,7 +16,7 @@ cabal-version:       >=1.10
 
 executable learning-haskell
   hs-source-dirs: src
-  main-is: Week5.HW05
+  main-is: Week5/HW05.hs
   build-depends:
     aeson,
     text,
@@ -29,6 +29,7 @@ library
   exposed-modules:
     HW04,
     Week5.HW05
+    Week6.HW06
   build-depends:
     base >=4.7 && <4.8,
     aeson,

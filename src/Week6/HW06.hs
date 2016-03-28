@@ -1,21 +1,23 @@
 {-# OPTIONS_GHC -Wall #-}
-module HW06 where
+{-# OPTIONS_GHC -XBangPatterns #-}
+module Week6.HW06 where
 
 import Data.List
-import Data.Functor
 
 -- Exercise 1 -----------------------------------------
 
 fib :: Integer -> Integer
-fib = undefined
+fib 0 = 1
+fib 1 = 1
+fib n = (fib $ n - 1) + (fib $ n - 2)
 
 fibs1 :: [Integer]
-fibs1 = undefined
+fibs1 = map fib [0..]
 
 -- Exercise 2 -----------------------------------------
 
 fibs2 :: [Integer]
-fibs2 = undefined
+fibs2 = 1 : 1 : zipWith (+) fibs2 (tail fibs2)
 
 -- Exercise 3 -----------------------------------------
 
@@ -27,40 +29,46 @@ instance Show a => Show (Stream a) where
              ++ ",..."
 
 streamToList :: Stream a -> [a]
-streamToList = undefined
+streamToList (Cons a xs) = a : streamToList xs
 
 -- Exercise 4 -----------------------------------------
 
 instance Functor Stream where
-    fmap = undefined
+    fmap f (Cons s t) = Cons (f s) $ fmap f t
 
 -- Exercise 5 -----------------------------------------
 
 sRepeat :: a -> Stream a
-sRepeat = undefined
+sRepeat a = Cons a $ sRepeat a
 
 sIterate :: (a -> a) -> a -> Stream a
-sIterate = undefined
+sIterate seed a = Cons a $ sIterate seed next
+    where next = seed a
 
 sInterleave :: Stream a -> Stream a -> Stream a
-sInterleave (Cons _ _) _ = undefined
+sInterleave (Cons a t) second = Cons a $ sInterleave second t
 
 sTake :: Int -> Stream a -> [a]
-sTake = undefined
+sTake 0 _ = []
+sTake n (Cons s t) = s : sTake (n-1) t
 
 -- Exercise 6 -----------------------------------------
 
 nats :: Stream Integer
-nats = undefined
+nats = sIterate (+1) 0
 
 ruler :: Stream Integer
-ruler = undefined
+-- ruler = (sInterleave (sRepeat 0) (sInterleave (sRepeat 1) (sInterleave (sRepeat 2) ...))
+ruler = foldr1 sInterleave (map sRepeat [0..])
 
 -- Exercise 7 -----------------------------------------
 
 -- | Implementation of C rand
 rand :: Int -> Stream Int
-rand = undefined
+rand n = sIterate lcg n
+
+lcg :: Int -> Int
+lcg n = (1103515245 * n + 12345) `mod` 2147483648
 
 -- Exercise 8 -----------------------------------------
 
@@ -73,10 +81,13 @@ minMaxSlow xs = Just (minimum xs, maximum xs)
 
 {- Total Memory in use: ??? MB -}
 minMax :: [Int] -> Maybe (Int, Int)
-minMax = undefined
+minMax [] = Nothing
+minMax list = Just $ mm 0 0 list
+    where mm curMin curMax []     = (curMin, curMax)
+          mm !curMin !curMax (x:xs) = mm (min curMin x) (max curMax x) xs
 
 main :: IO ()
-main = print $ minMaxSlow $ sTake 1000000 $ rand 7666532
+main = print $ minMax $ sTake 1000000 $ rand 7666532
 
 -- Exercise 10 ----------------------------------------
 

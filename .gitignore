@@ -1,3 +1,9 @@
 dist
 *.swp
 .idea
+*.prof
+*.o
+*.hp
+*.ps
+*.aux
+*.hi
