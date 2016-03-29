@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module HW04 where
+module Week4.HW04 where
 
 import Data.List(intercalate)
 

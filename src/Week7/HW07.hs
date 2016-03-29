@@ -1,9 +1,9 @@
 {-# LANGUAGE MonadComprehensions, RecordWildCards #-}
 {-# OPTIONS_GHC -Wall #-}
-module HW07 where
+module Week7.HW07 where
 
 import Prelude hiding (mapM)
-import Cards
+import Week7.Cards
 
 import Control.Monad hiding (mapM, liftM)
 import Control.Monad.Random
@@ -18,7 +18,7 @@ import qualified Data.Vector as V
 -- Exercise 1 -----------------------------------------
 
 liftM :: Monad m => (a -> b) -> m a -> m b
-liftM = undefined
+liftM f m = m >>= return . f
 
 swapV :: Int -> Int -> Vector a -> Maybe (Vector a)
 swapV = undefined
