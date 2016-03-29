@@ -31,8 +31,9 @@ executable learning-haskell
 library 
   exposed-modules:
     Week4.HW04,
-    Week5.HW05
+    Week5.HW05,
     Week6.HW06
+    Week7.HW07
   build-depends:
     base >=4.7 && <4.8,
     aeson,

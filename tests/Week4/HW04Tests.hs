@@ -1,8 +1,8 @@
-module HW04Tests where
+module Week4.HW04Tests where
 
 import Test.Tasty
 import Test.Tasty.HUnit
-import HW04
+import Week4.HW04
 
 ex1Suite :: TestTree
 ex1Suite = testGroup "Exercise 1"

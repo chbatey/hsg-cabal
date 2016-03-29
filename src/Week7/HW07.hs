@@ -21,22 +21,25 @@ liftM :: Monad m => (a -> b) -> m a -> m b
 liftM f m = m >>= return . f
 
 swapV :: Int -> Int -> Vector a -> Maybe (Vector a)
-swapV = undefined
+swapV a b v = do
+    aV <- v !? a
+    bV <- v !? b
+    return $ v // [(a,bV), (b, aV)]
 
 -- Exercise 2 -----------------------------------------
 
-mapM :: Monad m => (a -> m b) -> [a] -> m [b]
-mapM = undefined
+mapM' :: Monad m => (a -> m b) -> [a] -> m [b]
+mapM' f a = sequence $ map f a
 
 getElts :: [Int] -> Vector a -> Maybe [a]
-getElts = undefined
+getElts indices v = mapM' (v !?) indices
 
 -- Exercise 3 -----------------------------------------
 
 type Rnd a = Rand StdGen a
 
 randomElt :: Vector a -> Rnd (Maybe a)
-randomElt = undefined
+randomElt v = getRandomR (0, length v) >>= return .  (v !?)
 
 -- Exercise 4 -----------------------------------------
 

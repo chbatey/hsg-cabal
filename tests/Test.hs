@@ -2,14 +2,16 @@ module Main where
 
 import Test.Tasty
 
-import HW04Tests
+import Week4.HW04Tests
 import Week6.HW06Tests
+import Week7.HW07Tests
+
 
 main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests  = testGroup "Tests" [week6Tests]
+tests  = testGroup "Tests" [week7Tests]
 
 week4Tests :: TestTree
 week4Tests = testGroup "Week 4 Tests"
@@ -23,7 +25,13 @@ week4Tests = testGroup "Week 4 Tests"
     ]
 
 week6Tests :: TestTree
-week6Tests = testGroup "Week 6 Tsets"
+week6Tests = testGroup "Week 6 Tests"
     [
         fibSuite
+    ]
+
+week7Tests :: TestTree
+week7Tests = testGroup "Week 7 Tests"
+    [
+        fingersSuite
     ]
