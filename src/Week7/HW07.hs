@@ -38,26 +38,34 @@ getElts indices v = mapM' (v !?) indices
 
 type Rnd a = Rand StdGen a
 
+-- todo: pattern match against empty vector
 randomElt :: Vector a -> Rnd (Maybe a)
-randomElt v = getRandomR (0, length v) >>= return .  (v !?)
+randomElt v = getRandomR (0, V.length v) >>= return .  (v !?)
 
 -- Exercise 4 -----------------------------------------
 
 randomVec :: Random a => Int -> Rnd (Vector a)
-randomVec = undefined
+randomVec n = replicateM n getRandom >>= (return . V.fromList)
 
 randomVecR :: Random a => Int -> (a, a) -> Rnd (Vector a)
-randomVecR = undefined
+randomVecR n bounds = replicateM n (getRandomR bounds) >>= (return . V.fromList)
 
 -- Exercise 5 -----------------------------------------
 
 shuffle :: Vector a -> Rnd (Vector a)
-shuffle = undefined
+shuffle v = swap (V.length v - 1) v
+
+swap :: Int -> Vector a -> Rnd (Vector a)
+swap 0 v = return v
+swap n v = getRandomR (0, n) >>= (\r -> return $ v // [(r, current), (n, (toSwap r))]) >>= swap (n-1)
+    where current  = v ! n
+          toSwap r = v ! r
 
 -- Exercise 6 -----------------------------------------
 
 partitionAt :: Ord a => Vector a -> Int -> (Vector a, a, Vector a)
-partitionAt = undefined
+partitionAt v n =  (V.filter (< pivot) v, pivot, V.filter (> pivot) v)
+        where pivot = v ! n
 
 -- Exercise 7 -----------------------------------------
 
@@ -68,16 +76,28 @@ quicksort (x:xs) = quicksort [ y | y <- xs, y < x ]
                    <> (x : quicksort [ y | y <- xs, y >= x ])
 
 qsort :: Ord a => Vector a -> Vector a
-qsort = undefined
+qsort v
+    | V.length v == 0 = V.empty
+    | otherwise       = left V.++ V.cons pivot right
+        where pivot = V.head v
+              tail  = V.tail v
+              left  = qsort [ y | y <- tail, y < pivot ]
+              right = qsort [ y | y <- tail, y >= pivot ]
 
 -- Exercise 8 -----------------------------------------
 
 qsortR :: Ord a => Vector a -> Rnd (Vector a)
-qsortR = undefined
+qsortR v
+    | V.length v == 0 = return V.empty
+    | otherwise = pivoted
+            where pivoted = do index <- getRandomR (0, V.length v -1)
+                               let (l, pivot, r) = partitionAt v index
+                               left <- qsortR l
+                               right <- qsortR r
+                               return $ left V.++ (cons pivot right)
 
 -- Exercise 9 -----------------------------------------
 
--- Selection
 select :: Ord a => Int -> Vector a -> Rnd (Maybe a)
 select = undefined
 
@@ -107,7 +127,7 @@ repl :: State -> IO ()
 repl s@State{..} | money <= 0  = putStrLn "You ran out of money!"
                  | V.null deck = deckEmpty
                  | otherwise   = do
-  putStrLn $ "You have \ESC[32m$" ++ show money ++ "\ESC[0m"
+  putStrLn $ "You have ESC[32m$" ++ show money ++ "\ESC[0m"
   putStrLn "Would you like to play (y/n)?"
   cont <- getLine
   if cont == "n"

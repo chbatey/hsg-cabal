@@ -53,6 +53,7 @@ executable test-learning-haskell
   ghc-options: -Wall
   build-depends:       
     base >=4.7 && <4.8,
+    vector,
     tasty,
     tasty-hunit,
     learning-haskell

@@ -33,5 +33,6 @@ week6Tests = testGroup "Week 6 Tests"
 week7Tests :: TestTree
 week7Tests = testGroup "Week 7 Tests"
     [
-        fingersSuite
+        fingersSuite,
+        partitionSuite
     ]
