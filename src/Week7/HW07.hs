@@ -99,7 +99,17 @@ qsortR v
 -- Exercise 9 -----------------------------------------
 
 select :: Ord a => Int -> Vector a -> Rnd (Maybe a)
-select = undefined
+select i v                                                                         -- 1 [3,2,1]
+    | V.length v == 0 = return Nothing
+    | otherwise = answer v 0
+        where answer vector prefix                                                 -- [3,2,1] 0
+                  | V.length vector == 0 = return Nothing                          --
+                  | otherwise = do index <- getRandomR (0, V.length vector - 1)    -- 0
+                                   let (l, pivot, r) = partitionAt vector index    --
+                                   let pivotNewIndex = prefix + V.length l         --
+                                   if pivotNewIndex == i then return $ Just pivot  --
+                                   else if pivotNewIndex > i then answer l prefix  --
+                                   else answer r pivotNewIndex                     --                           -
 
 -- Exercise 10 ----------------------------------------
 
