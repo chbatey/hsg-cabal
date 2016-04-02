@@ -10,7 +10,7 @@ import Control.Monad.Random
 import Data.Functor
 import Data.Monoid
 import Data.Vector (Vector, cons, (!), (!?), (//))
-import System.Random
+import System.Random()
 
 import qualified Data.Vector as V
 
@@ -80,9 +80,9 @@ qsort v
     | V.length v == 0 = V.empty
     | otherwise       = left V.++ V.cons pivot right
         where pivot = V.head v
-              tail  = V.tail v
-              left  = qsort [ y | y <- tail, y < pivot ]
-              right = qsort [ y | y <- tail, y >= pivot ]
+              t  = V.tail v
+              left  = qsort [ y | y <- t, y < pivot ]
+              right = qsort [ y | y <- t, y >= pivot ]
 
 -- Exercise 8 -----------------------------------------
 
@@ -99,35 +99,43 @@ qsortR v
 -- Exercise 9 -----------------------------------------
 
 select :: Ord a => Int -> Vector a -> Rnd (Maybe a)
-select i v                                                                         -- 1 [3,2,1]
+select i v
     | V.length v == 0 = return Nothing
     | otherwise = answer v 0
-        where answer vector prefix                                                 -- [3,2,1] 0
-                  | V.length vector == 0 = return Nothing                          --
-                  | otherwise = do index <- getRandomR (0, V.length vector - 1)    -- 0
-                                   let (l, pivot, r) = partitionAt vector index    --
-                                   let pivotNewIndex = prefix + V.length l         --
-                                   if pivotNewIndex == i then return $ Just pivot  --
-                                   else if pivotNewIndex > i then answer l prefix  --
-                                   else answer r pivotNewIndex                     --                           -
+        where answer vector prefix
+                  | V.length vector == 0 = return Nothing
+                  | otherwise = do index <- getRandomR (0, V.length vector - 1)
+                                   let (l, pivot, r) = partitionAt vector index
+                                   let pivotNewIndex = prefix + V.length l
+                                   if pivotNewIndex == i then return $ Just pivot
+                                   else if pivotNewIndex > i then answer l prefix
+                                   else answer r (pivotNewIndex + 1)
 
 -- Exercise 10 ----------------------------------------
 
 allCards :: Deck
-allCards = undefined
+allCards = [Card label suite | suite <- suits, label <- labels]
 
 newDeck :: Rnd Deck
-newDeck =  undefined
+newDeck =  shuffle allCards
 
 -- Exercise 11 ----------------------------------------
 
 nextCard :: Deck -> Maybe (Card, Deck)
-nextCard = undefined
+nextCard deck
+    | V.length deck == 0 = Nothing
+    | otherwise = Just ((V.head deck), (V.tail deck))
 
 -- Exercise 12 ----------------------------------------
 
 getCards :: Int -> Deck -> Maybe ([Card], Deck)
-getCards = undefined
+getCards n deck = draw n $ Just ([], deck)
+    where draw 0 result = result
+          draw n result = do
+            (cards, deck) <- result
+            (nextCard, nextDeck) <- nextCard deck
+            draw (n-1) (Just (nextCard : cards, nextDeck))
+
 
 -- Exercise 13 ----------------------------------------
 
